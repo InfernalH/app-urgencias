@@ -39,6 +39,12 @@ page = st.sidebar.radio("Ir a:", ["Panel de Control", "Cargar Nuevo Caso", "Base
 # --- PÁGINA 1: DASHBOARD ---
 if page == "Panel de Control":
     st.title("📊 Panel de Control - Urgencias 2026")
+
+    # 1. Elimina filas donde 'Local' es nulo (NaN)
+df = df.dropna(subset=['Local'])
+
+# 2. Asegura eliminar filas que tengan texto vacío o solo espacios
+df = df[df['Local'].astype(str).str.strip() != '']
     
     if not df.empty:
         col1, col2, col3, col4 = st.columns(4)
@@ -109,3 +115,4 @@ elif page == "Base de Datos":
     st.title("🔍 Explorar Base Completa")
 
     st.dataframe(df, use_container_width=True)
+
