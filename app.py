@@ -46,7 +46,6 @@ df = df.dropna(subset=['Local'])
 # 2. Asegura eliminar filas que tengan texto vacío o solo espacios
 df = df[df['Local'].astype(str).str.strip() != '']
     
-    if not df.empty:
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Total Casos", len(df))
         col2.metric("Pendientes", len(df[df['ESTADO'] == 'Sin Respuesta']))
@@ -115,4 +114,5 @@ elif page == "Base de Datos":
     st.title("🔍 Explorar Base Completa")
 
     st.dataframe(df, use_container_width=True)
+
 
