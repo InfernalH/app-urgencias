@@ -107,4 +107,5 @@ elif page == "Cargar Nuevo Caso":
 # --- PÁGINA 3: DATOS ---
 elif page == "Base de Datos":
     st.title("🔍 Explorar Base Completa")
+
     st.dataframe(df, use_container_width=True)
