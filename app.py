@@ -14,7 +14,7 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 # Función para cargar datos (sin caché excesiva para ver cambios al instante)
 def load_data():
     # ttl=5 significa que los datos se refrescan cada 5 segundos si hay cambios
-    return conn.read(ttl=5) 
+    return conn.read(worksheet="Base Urgencias 2026", ttl="10m") 
 
 # Función para guardar datos
 def add_row_to_sheet(new_row_df, current_df):
@@ -107,4 +107,5 @@ elif page == "Cargar Nuevo Caso":
 # --- PÁGINA 3: DATOS ---
 elif page == "Base de Datos":
     st.title("🔍 Explorar Base Completa")
+
     st.dataframe(df, use_container_width=True)
