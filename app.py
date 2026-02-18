@@ -14,7 +14,7 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 # Función para cargar datos (sin caché excesiva para ver cambios al instante)
 def load_data():
     # ttl=5 significa que los datos se refrescan cada 5 segundos si hay cambios
-    return conn.read(worksheet="Base Urgencias 2026", ttl="10m") 
+    return conn.read(ttl=5) 
 
 # Función para guardar datos
 def add_row_to_sheet(new_row_df, current_df):
@@ -39,13 +39,8 @@ page = st.sidebar.radio("Ir a:", ["Panel de Control", "Cargar Nuevo Caso", "Base
 # --- PÁGINA 1: DASHBOARD ---
 if page == "Panel de Control":
     st.title("📊 Panel de Control - Urgencias 2026")
-
-    # 1. Elimina filas donde 'Local' es nulo (NaN)
-df = df.dropna(subset=['Local'])
-
-# 2. Asegura eliminar filas que tengan texto vacío o solo espacios
-df = df[df['Local'].astype(str).str.strip() != '']
     
+    if not df.empty:
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Total Casos", len(df))
         col2.metric("Pendientes", len(df[df['ESTADO'] == 'Sin Respuesta']))
@@ -112,7 +107,4 @@ elif page == "Cargar Nuevo Caso":
 # --- PÁGINA 3: DATOS ---
 elif page == "Base de Datos":
     st.title("🔍 Explorar Base Completa")
-
     st.dataframe(df, use_container_width=True)
-
-
