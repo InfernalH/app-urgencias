@@ -1,3 +1,5 @@
+import gspread
+from google.oauth2.service_account import Credentials
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -18,12 +20,25 @@ def load_data():
 
 # Función para guardar datos
 def add_row_to_sheet(new_row_df, current_df):
-    # Obtener la URL de la hoja de cálculo desde los secretos
-    spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+    # Definir scopes necesarios
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
     
-    # Abrir la hoja de cálculo y seleccionar la pestaña correcta
-    # conn.client es el cliente de gspread
-    sh = conn.client.open_by_url(spreadsheet_url)
+    # Obtener credenciales desde secrets
+    credentials_info = dict(st.secrets["connections"]["gsheets"])
+    
+    # Autenticar con gspread
+    creds = Credentials.from_service_account_info(
+        credentials_info,
+        scopes=scopes
+    )
+    client = gspread.authorize(creds)
+    
+    # Abrir la hoja de cálculo
+    spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+    sh = client.open_by_url(spreadsheet_url)
     worksheet = sh.worksheet("Base Urgencias 2026")
     
     # Convertir el DataFrame (1 fila) a una lista de valores
