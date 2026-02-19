@@ -18,10 +18,19 @@ def load_data():
 
 # Función para guardar datos
 def add_row_to_sheet(new_row_df, current_df):
-    # Unimos el dato nuevo con lo que ya existe
-    updated_df = pd.concat([current_df, new_row_df], ignore_index=True)
-    # Escribimos todo de vuelta al Sheet
-    conn.update(data=updated_df)
+    # Obtener la URL de la hoja de cálculo desde los secretos
+    spreadsheet_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+    
+    # Abrir la hoja de cálculo y seleccionar la pestaña correcta
+    # conn.client es el cliente de gspread
+    sh = conn.client.open_by_url(spreadsheet_url)
+    worksheet = sh.worksheet("Base Urgencias 2026")
+    
+    # Convertir el DataFrame (1 fila) a una lista de valores
+    new_row_values = new_row_df.iloc[0].tolist()
+    
+    # Agregar la fila al final
+    worksheet.append_row(new_row_values)
 
 # Cargar base inicial
 try:
